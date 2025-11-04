@@ -48,61 +48,10 @@ Result: 77.00 °F
 
 - `app.py` - Aplikasi utama dengan fungsi konversi suhu
 - `Dockerfile` - Konfigurasi untuk menjalankan aplikasi dalam container Docker
+- `ci.yml` - Test stage: Syntax check pada app.py + menjalankan pytest (jika ada) dan Docker stage: Build image app-exam:latest + test container functionality
+- `lint.yml` - Check code style, complexity, dan fatal errors
 
 ## CI/CD Pipeline
-
-### GitHub Actions Setup
-
-Untuk mengatur CI/CD pipeline dengan GitHub Actions, buat file `.github/workflows/ci.yml`:
-
-```yaml
-name: CI/CD Pipeline
-
-on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.10'
-    
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pytest
-    
-    - name: Run syntax check
-      run: python -m py_compile app.py
-    
-    - name: Run tests
-      run: pytest tests/ || echo "No tests found"
-
-  docker:
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Build Docker image
-      run: docker build -t exam:latest .
-    
-    - name: Test Docker container
-      run: |
-        docker run --rm exam:latest python -c "
-        from app import celsius_to_fahrenheit
-        assert celsius_to_fahrenheit(0) == 32
-        print('Docker container test passed!')
-        "
-```
 
 ### Pipeline Stages
 
