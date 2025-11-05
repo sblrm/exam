@@ -74,6 +74,6 @@ Test pipeline secara lokal sebelum push:
 python -m py_compile app.py
 
 # Test Docker build
-docker build -t exam:test .
-docker run --rm exam:test python -c "from app import celsius_to_fahrenheit; print(celsius_to_fahrenheit(100))"
+docker build -t app-exam:test .
+docker run --rm app-exam:test python -c "from app import celsius_to_fahrenheit; print(celsius_to_fahrenheit(100))"
 ```
